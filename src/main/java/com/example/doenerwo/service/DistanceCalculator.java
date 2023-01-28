@@ -17,8 +17,10 @@ public class DistanceCalculator {
 
         double distance = Math.hypot(ac, cb);
 
-        System.out.print(distance);
+        //System.out.print(distance);
 
         return Math.hypot(ac, cb);
     }
+
+
 }

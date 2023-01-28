@@ -1,5 +1,7 @@
 package com.example.doenerwo;
 
+import com.example.doenerwo.frontend.Start;
+import com.example.doenerwo.service.DoenerstandService;
 import com.example.doenerwo.service.OpenStreetMapUtils;
 import com.example.doenerwo.service.ReadKoordinatesFromGivenAddress;
 import org.aspectj.apache.bcel.classfile.Module;
@@ -8,6 +10,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.List;
@@ -21,38 +25,36 @@ public class DoenerwoApplication implements CommandLineRunner {
 	//ReadKoordinatesFromGivenAddress readKoordinatesFromGivenAddress = new ReadKoordinatesFromGivenAddress();
 
 	@Autowired
+	Start starter;
+
+	@Autowired
 	OpenStreetMapUtils openStreetMapUtils = new OpenStreetMapUtils();
+
+	@Autowired
+	DoenerstandService ds;
 
 	@Autowired
 	ExcelManager excelManager;
 
+
 	public static void main(String[] args) {
-		SpringApplication.run(DoenerwoApplication.class, args);
+		//SpringApplication.run(DoenerwoApplication.class, args);
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(DoenerwoApplication.class);
+		builder.headless(false);
+		ConfigurableApplicationContext context = builder.run(args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
+		starter.init();
 		//OpenStreetMapUtils openStreetMapUtils = new OpenStreetMapUtils();
-		String address = "Mariahilferstrasse 120";
-		Map<String, Double> coordss;
-		Map<String, String> restaurantsNearAddress;
+		//String address = "Reinprechtsdorfer Strasse 9";
+		//Map<String, Double> coords;
+		//coords = openStreetMapUtils.getInstance().getCoordinates(address);
+		//System.out.println("latitude :" + coords.get("lat"));
+		//System.out.println("longitude:" + coords.get("lon"));
 
-		//restaurantsNearAddress = openStreetMapUtils.getInstance().getRestaurantsNearAddress(address);
-
-
-		coordss = openStreetMapUtils.getInstance().getCoordinates(address);
-
-		//coords = openStreetMapUtils.getInstance().getRestaurantsNearAddress(address);
-
-		System.out.println("latitude :" + coordss.get("lat"));
-		System.out.println("longitude:" + coordss.get("lon"));
-
-		//ExcelManager excelManager = new ExcelManager();
-
-		//ADD EXCEL
-		List<DoenerBude> ListOfInserted = excelManager.SendToMongo();
-
-
-
+		//ds.printFindings();
+		//ds.calculateFindings("Favoritenstrasse 226");
 	}
 }

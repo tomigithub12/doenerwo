@@ -1,25 +1,96 @@
 package com.example.doenerwo.service;
 
-import org.apache.tomcat.util.json.JSONParser;
+import com.example.doenerwo.domain.Doenerstand;
+import com.example.doenerwo.repository.DoenerstandRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.util.*;
 //import org.apache.log4j.Logger;
 
+@Service
 public class DoenerstandService {
 
-    double x1 = 3;
-    double y1 = 4;
-    double x2 = 7;
-    double y2 = 1;
 
-    double distance = DistanceCalculator.calculateDistance(x1, y1, x2, y2);
+    @Autowired
+    OpenStreetMapUtils myCoordinats = new OpenStreetMapUtils();
+    @Autowired
+    private DoenerstandRepository repo;
 
+
+    public List findStandl() {
+        //System.out.println("debug1");
+        return repo.findAll();
+    }
+
+    public void printFindings(){
+
+        //System.out.println("debug2");
+        List<Doenerstand> listeStandln=new ArrayList<Doenerstand>();
+
+        //System.out.println("debug3");
+        listeStandln = (List<Doenerstand>) this.findStandl();
+
+        //System.out.println("debug4");
+        for(Doenerstand liste:listeStandln)
+            System.out.println(liste);
+    }
+
+    public String calculateFindings(String myAdress) {
+
+        Map<String, Double> myCoordinatsMap = new HashMap<>();
+
+        myCoordinatsMap = myCoordinats.getInstance().getCoordinates(myAdress);
+
+        System.out.println("Wo Döner?");
+
+        List<Double> Results = new ArrayList<>();
+
+        double distance = 0;
+        double myLatitude = myCoordinatsMap.get("lon");
+        double myLongitude = myCoordinatsMap.get("lat");
+        double doenerstandLongitude = 0;
+        double doenerstandLatitude = 0;
+        String Adress = "";
+        String Name = "";
+        Map<Double, String> mapOfDoenerstande = new HashMap<>();
+
+        //System.out.println("debug2");
+        List<Doenerstand> listeStandln = new ArrayList<Doenerstand>();
+
+        //System.out.println("debug3");
+        listeStandln = (List<Doenerstand>) this.findStandl();
+
+        System.out.println("Berechne....");
+
+        //System.out.println("debug4");
+        for (Doenerstand liste : listeStandln) {
+
+            Adress = liste.getAdress();
+            Name = liste.getName();
+            doenerstandLongitude = Double.parseDouble(liste.getLongitude());
+            doenerstandLatitude = Double.parseDouble(liste.getLatitude());
+
+            distance = DistanceCalculator.calculateDistance(myLatitude,myLongitude,doenerstandLongitude,doenerstandLatitude);
+            //System.out.println(distance);
+
+            mapOfDoenerstande.put(distance,liste.getAdress());
+
+            Results.add(distance);
+        }
+
+        System.out.println("Hier Döner:");
+
+        Collections.sort(Results);
+        for(Double nearest:Results){
+            System.out.println(nearest);
+            System.out.println(mapOfDoenerstande.get(nearest));
+            Adress = mapOfDoenerstande.get(nearest);
+            break;
+        }
+
+        return Adress;
+    }
     /*
     public final static Logger log = Logger.getLogger("OpenStreeMapUtils");
 

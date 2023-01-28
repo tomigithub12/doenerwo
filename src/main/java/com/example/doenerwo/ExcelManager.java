@@ -66,14 +66,14 @@ public class ExcelManager {
             //DoenerBude doenerBude = new DoenerBude("TestName", "testLong", "testLat");
             //String s = repo.findAll().toString();
             //repo.save(doenerBude);
-            repo.saveAll(standortliste);
-            List<DoenerBude> listOfInsertedAndFoundAll = repo.findAll();
+            //repo.saveAll(standortliste);
+            //List<DoenerBude> listOfInsertedAndFoundAll = repo.findAll();
             System.out.println("read");
-            return listOfInsertedAndFoundAll;
+            //return listOfInsertedAndFoundAll;
         } catch (Exception e) {
             return null;
         }
-
+    return null;
     }
 
 
