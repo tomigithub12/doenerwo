@@ -4,21 +4,24 @@ package com.example.doenerwo;
 import jakarta.persistence.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "DoenerWo")
-public class DönerBude {
+@Document(collection = "Doenerstaende")
+public class DoenerBude {
 
     @Id
     private String name;
-    private String longitude;
     private String latitude;
+    private String longitude;
+
+    private String address;
 
 
-    public DönerBude(String name, String longitude, String latitude) {
+    public DoenerBude(String name, String longitude, String latitude, String address) {
 
         super();
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.address = address;
     }
 
 
@@ -44,5 +47,12 @@ public class DönerBude {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String latitude) {
+        this.address = latitude;
     }
 }

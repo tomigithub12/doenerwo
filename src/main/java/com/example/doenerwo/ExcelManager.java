@@ -6,12 +6,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -24,12 +22,12 @@ public class ExcelManager {
 //        super();
 //    }
 
-    private static List<DönerBude> ReadExcel(){
-        List<DönerBude> standortliste = new ArrayList<DönerBude>();
+    private static List<DoenerBude> ReadExcel(){
+        List<DoenerBude> standortliste = new ArrayList<DoenerBude>();
 
         try
         {
-            FileInputStream file = new FileInputStream(new File("C:\\Users\\leona\\Downloads\\DönerStandorte.xlsx"));
+            FileInputStream file = new FileInputStream(new File("/Users/mihi/Downloads/DoenerStandorte2.xlsx"));
 
             //Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -48,7 +46,7 @@ public class ExcelManager {
                 Iterator<Cell> cellIterator = row.cellIterator();
 
                 if(row.getCell(0)!=null) {
-                    DönerBude temp = new DönerBude(row.getCell(0).getStringCellValue(), row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue());
+                    DoenerBude temp = new DoenerBude(row.getCell(0).getStringCellValue(), row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue(), row.getCell(3).getStringCellValue());
                     standortliste.add(temp);
                 }
             }
@@ -62,11 +60,20 @@ public class ExcelManager {
         return standortliste;
     }
 
-    public void SendToMongo(){
-        List<DönerBude> standortliste = ReadExcel();
-        repo.saveAll(standortliste);
-        List<DönerBude> x = repo.findAll();
-        System.out.println("read");
+    public List<DoenerBude> SendToMongo(){
+        try {
+            List<DoenerBude> standortliste = ReadExcel();
+            //DoenerBude doenerBude = new DoenerBude("TestName", "testLong", "testLat");
+            //String s = repo.findAll().toString();
+            //repo.save(doenerBude);
+            repo.saveAll(standortliste);
+            List<DoenerBude> listOfInsertedAndFoundAll = repo.findAll();
+            System.out.println("read");
+            return listOfInsertedAndFoundAll;
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
 

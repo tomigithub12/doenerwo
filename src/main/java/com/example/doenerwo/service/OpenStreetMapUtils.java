@@ -59,6 +59,12 @@ public class OpenStreetMapUtils {
             con = (HttpURLConnection) newUrl.openConnection();
         }
 
+        if (responceCode == 302) {
+            String location = con.getHeaderField("Location");
+            URL newUrl = new URL(location);
+            con = (HttpURLConnection) newUrl.openConnection();
+        }
+
         if (responceCode == HttpURLConnection.HTTP_OK)
         {
             String line;
@@ -97,6 +103,91 @@ public class OpenStreetMapUtils {
         in.close();
 
         return response.toString();
+    }
+
+    public Map<String, String> getRestaurantsNearAddress(String address) {
+
+        Map<String, Double> res;
+        StringBuffer query;
+        String[] split = address.split(" ");
+        String queryResult = null;
+
+        query = new StringBuffer();
+        res = new HashMap<String, Double>();
+
+        query.append("http://google.at/maps/search/");
+
+        if (split.length == 0) {
+            return null;
+        }
+
+        for (int i = 0; i < split.length; i++) {
+            query.append(split[i]);
+            if (i < (split.length - 1)) {
+                query.append("+");
+            }
+        }
+        query.append("+döner+in+der+nähe");
+
+        //log.debug("Query:" + query);
+
+        WebClient webClient = WebClient.create(query.toString());
+
+        Mono<String> body = webClient.get().retrieve().bodyToMono(String.class);
+
+        String s = body.block();
+
+        /*
+        boolean statuss = s.matches(String.valueOf(301));
+        String status = "";
+        if (statuss == true)
+        {
+            status = "301";
+        }
+/*
+        //if (status == HttpURLConnection.HTTP_MOVED_TEMP
+        //        || status == HttpURLConnection.HTTP_MOVED_PERM) {
+        /*
+        if (status == "301") {
+                String location = con.getHeaderField("Location");
+                URL newUrl = new URL(location);
+                con = (HttpURLConnection) newUrl.openConnection();
+            }
+
+
+         */
+
+
+
+        try {
+            queryResult = getRequest(query.toString());
+        } catch (Exception e) {
+            //log.error("Error when trying to get data with the following query " + query);
+        }
+
+        if (queryResult == null) {
+            return null;
+        }
+
+        Object obj = JSONValue.parse(queryResult);
+        //log.debug("obj=" + obj);
+
+        if (obj instanceof JSONArray) {
+            JSONArray array = (JSONArray) obj;
+            if (array.size() > 0) {
+                JSONObject jsonObject = (JSONObject) array.get(0);
+
+                String lon = (String) jsonObject.get("lon");
+                String lat = (String) jsonObject.get("lat");
+                //log.debug("lon=" + lon);
+                //log.debug("lat=" + lat);
+                res.put("lon", Double.parseDouble(lon));
+                res.put("lat", Double.parseDouble(lat));
+
+            }
+        }
+
+        return null;
     }
 
     public Map<String, Double> getCoordinates(String address) {
