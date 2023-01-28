@@ -29,7 +29,7 @@ public class DoenerwoApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		//OpenStreetMapUtils openStreetMapUtils = new OpenStreetMapUtils();
-		String address = "kohlenhofgasse 4";
+		String address = "Mariahilferstrasse 120";
 		Map<String, Double> coords;
 		coords = openStreetMapUtils.getInstance().getCoordinates(address);
 		System.out.println("latitude :" + coords.get("lat"));
