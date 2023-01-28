@@ -71,7 +71,8 @@ public class DoenerstandService {
             doenerstandLongitude = Double.parseDouble(liste.getLongitude());
             doenerstandLatitude = Double.parseDouble(liste.getLatitude());
 
-            distance = DistanceCalculator.calculateDistance(myLatitude,myLongitude,doenerstandLongitude,doenerstandLatitude);
+            //distance = DistanceCalculator.calculateDistance(myLatitude,myLongitude,doenerstandLongitude,doenerstandLatitude);
+            distance = DistanceCalculator.calculateDistance(myLongitude,myLatitude,doenerstandLongitude,doenerstandLatitude);
             //System.out.println(distance);
 
             mapOfDoenerstande.put(distance,liste.getAdress());
@@ -85,9 +86,12 @@ public class DoenerstandService {
         for(Double nearest:Results){
             System.out.println(nearest);
             System.out.println(mapOfDoenerstande.get(nearest));
+
             Adress = mapOfDoenerstande.get(nearest);
             break;
         }
+
+
 
         return Adress;
     }
